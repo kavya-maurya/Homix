@@ -17,7 +17,7 @@ The system works by connecting the ESP8266 module to WiFi. The microcontroller c
 ---
 
 # 📂 Project Structure
-abcd
+
 
 ```bash
 Homix/
