@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Light Control</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      body {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #0f172a;
+        color: white;
+      }
+
+      .container {
+        width: 350px;
+        padding: 30px;
+        border-radius: 20px;
+        background: #1e293b;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        text-align: center;
+      }
+
+      h1 {
+        margin-bottom: 20px;
+        font-size: 28px;
+      }
+
+      .light {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        margin: 20px auto;
+        background: #222;
+        box-shadow: 0 0 20px #000;
+        transition: 0.3s ease;
+      }
+
+      .light.on {
+        background: yellow;
+        box-shadow: 0 0 40px yellow;
+      }
+
+      .status {
+        margin-bottom: 20px;
+        font-size: 18px;
+        font-weight: bold;
+      }
+
+      .buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+      }
+
+      button {
+        border: none;
+        padding: 12px 25px;
+        border-radius: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+        color: white;
+      }
+
+      .on-btn {
+        background: #22c55e;
+      }
+
+      .on-btn:hover {
+        background: #16a34a;
+        transform: scale(1.05);
+      }
+
+      .off-btn {
+        background: #ef4444;
+      }
+
+      .off-btn:hover {
+        background: #dc2626;
+        transform: scale(1.05);
+      }
+    </style>
+  </head>
+
+  <body onload="getLightStatus()">
+    <div class="container">
+      <h1>💡 Smart Light</h1>
+
+      <div id="lightBulb" class="light"></div>
+
+      <div id="statusText" class="status">Status: OFF</div>
+
+      <div class="buttons">
+        <button class="on-btn" onclick="lightStatusON()" id="statusON">
+          ON
+        </button>
+
+        <button class="off-btn" onclick="lightStatusOFF()" id="statusOFF">
+          OFF
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const bulb = document.getElementById("lightBulb");
+      const btnStatusOn = document.getElementById("statusON");
+      const btnStatusOFF = document.getElementById("statusOFF");
+      const statusText = document.getElementById("statusText");
+
+      function lightStatusON() {
+        bulb.classList.add("on");
+        statusText.innerHTML = "Status: ON";
+        btnStatusOn.style.display = "none";
+        btnStatusOFF.style.display = "block";
+
+        fetch(
+          "https://device-api-6.onrender.com/api/devices/6a032a9ac9906f7b425a5773",
+          {
+            method: "PUT",
+            body: JSON.stringify({
+              deviceName: "WEMOS-D1-LIGHT",
+              model: "ESP8266",
+              status: "ON",
+            }),
+            headers: {
+              "Content-Type": "application/json",
+              Authorization:
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTRjMzk3M2E0ODlkMjg0NDhiN2U0ZSIsImlhdCI6MTc3NzcyNDU1NywiZXhwIjoxNzc4MzI5MzU3fQ.FfwQn2wDSILFuTcKpjgXnfDRh47KeEICTKc5l5WixJk",
+            },
+          },
+        )
+          .then((response) => response.json())
+          .then((data) => console.log(data))
+          .catch((err) => console.log(err));
+      }
+
+      function lightStatusOFF() {
+        bulb.classList.remove("on");
+        statusText.innerHTML = "Status: OFF";
+        btnStatusOn.style.display = "block";
+        btnStatusOFF.style.display = "none";
+
+        fetch(
+          "https://device-api-6.onrender.com/api/devices/6a032a9ac9906f7b425a5773",
+          {
+            method: "PUT",
+            body: JSON.stringify({
+              deviceName: "WEMOS-D1-LIGHT",
+              model: "ESP8266",
+              status: "OFF",
+            }),
+            headers: {
+              "Content-Type": "application/json",
+              Authorization:
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTRjMzk3M2E0ODlkMjg0NDhiN2U0ZSIsImlhdCI6MTc3NzcyNDU1NywiZXhwIjoxNzc4MzI5MzU3fQ.FfwQn2wDSILFuTcKpjgXnfDRh47KeEICTKc5l5WixJk",
+            },
+          },
+        )
+          .then((response) => response.json())
+          .then((data) => console.log(data))
+          .catch((err) => console.log(err));
+      }
+
+      function getLightStatus() {
+        fetch(
+          "https://device-api-6.onrender.com/api/devices/6a032a9ac9906f7b425a5773",
+          {
+            method: "GET",
+            headers: {
+              Authorization:
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTRjMzk3M2E0ODlkMjg0NDhiN2U0ZSIsImlhdCI6MTc3NzcyNDU1NywiZXhwIjoxNzc4MzI5MzU3fQ.FfwQn2wDSILFuTcKpjgXnfDRh47KeEICTKc5l5WixJk",
+            },
+          },
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "ON") {
+              bulb.classList.add("on");
+              statusText.innerHTML = "Status: ON";
+              btnStatusOn.style.display = "none";
+              btnStatusOFF.style.display = "block";
+              console.log("Its on");
+            } else {
+              bulb.classList.remove("on");
+              statusText.innerHTML = "Status: OFF";
+              btnStatusOn.style.display = "block";
+              btnStatusOFF.style.display = "none";
+              console.log("Its off");
+            }
+          })
+          .catch((err) => console.log(err));
+      }
+
+      setInterval(() => {
+        getLightStatus();
+      }, 2000);
+    </script>
+  </body>
+</html>
